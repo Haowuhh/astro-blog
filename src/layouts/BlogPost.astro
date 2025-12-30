@@ -1,0 +1,51 @@
+---
+import Layout from './Layout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  tags?: string[];
+}
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  tags = [],
+} = Astro.props;
+
+const formattedDate = new Date(pubDate).toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<Layout title={title}>
+  <article class="prose prose-gray mx-auto max-w-none">
+    <header class="mb-8">
+      <h1 class="mb-4 text-4xl font-bold">{title}</h1>
+      <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600">
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        {updatedDate && (
+          <time datetime={updatedDate.toISOString()}>
+            更新于 {new Date(updatedDate).toLocaleDateString('zh-CN')}
+          </time>
+        )}
+        {tags.length > 0 && (
+          <div class="flex gap-2">
+            {tags.map((tag) => (
+              <span class="rounded bg-gray-200 px-2 py-1 text-xs">{tag}</span>
+            ))}
+          </div>
+        )}
+      </div>
+      {description && <p class="mt-4 text-lg text-gray-700">{description}</p>}
+    </header>
+    <hr class="my-8 border-gray-200" />
+    <slot />
+  </article>
+</Layout>
